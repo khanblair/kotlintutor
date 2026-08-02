@@ -15,9 +15,11 @@ class RoomProgressRepository(private val dao: ProgressDao) : ProgressRepository 
     }
 
     override suspend fun recordQuizScore(topicId: String, score: Int, attemptedAt: Long) {
+        // Submitting a quiz is itself a completion signal, independent of score.
         val existing = dao.getByTopicId(topicId)
         dao.upsert(
             (existing ?: ProgressEntity(topicId, false, null, null)).copy(
+                isCompleted = true,
                 lastQuizScore = score,
                 lastAttemptedAt = attemptedAt,
             ),

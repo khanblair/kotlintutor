@@ -25,7 +25,7 @@ private class FakeProgressRepository(
 
     override suspend fun recordQuizScore(topicId: String, score: Int, attemptedAt: Long) {
         progressFlow.value = progressFlow.value.filterNot { it.topicId == topicId } +
-            TopicProgress(topicId, isCompleted = false, lastQuizScore = score, lastAttemptedAt = attemptedAt)
+            TopicProgress(topicId, isCompleted = true, lastQuizScore = score, lastAttemptedAt = attemptedAt)
     }
 }
 
