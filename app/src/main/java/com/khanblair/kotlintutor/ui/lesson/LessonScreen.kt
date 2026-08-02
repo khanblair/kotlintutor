@@ -28,6 +28,7 @@ import com.khanblair.kotlintutor.model.Recap
 fun LessonScreen(
     viewModel: LessonViewModel,
     onTakeQuiz: () -> Unit,
+    onAskTutor: () -> Unit,
     onBack: () -> Unit,
 ) {
     val topic = viewModel.topic
@@ -93,6 +94,9 @@ fun LessonScreen(
                     onBack()
                 }) {
                     Text("Mark Complete")
+                }
+                OutlinedButton(onClick = onAskTutor) {
+                    Text("Ask the Tutor")
                 }
                 Button(onClick = onTakeQuiz) {
                     Text("Take Quiz")

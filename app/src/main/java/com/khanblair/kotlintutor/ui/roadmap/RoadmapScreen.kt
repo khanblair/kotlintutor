@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,6 +30,7 @@ import com.khanblair.kotlintutor.model.RoadmapItem
 fun RoadmapScreen(
     viewModel: RoadmapViewModel,
     onLessonClick: (topicId: String) -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     RoadmapContent(
@@ -36,6 +38,7 @@ fun RoadmapScreen(
         onTopicClick = { item ->
             if (item.node.hasContent) onLessonClick(item.node.id) else viewModel.markCompleted(item.node.id)
         },
+        onSettingsClick = onSettingsClick,
     )
 }
 
@@ -44,13 +47,23 @@ fun RoadmapScreen(
 private fun RoadmapContent(
     uiState: RoadmapUiState,
     onTopicClick: (RoadmapItem) -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     val categories = uiState.items.filter { it.node.parentId == null }
     val childrenByCategory = uiState.items.filter { it.node.parentId != null }.groupBy { it.node.parentId }
     var expandedIds by remember { mutableStateOf(setOf<String>()) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Kotlin Roadmap") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text("Kotlin Roadmap") },
+                actions = {
+                    IconButton(onClick = onSettingsClick) {
+                        Text("⚙", style = MaterialTheme.typography.titleLarge)
+                    }
+                },
+            )
+        },
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
