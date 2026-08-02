@@ -51,16 +51,53 @@ roadmap checklist.
 ## Screens
 
 - **RoadmapScreen** — the entire roadmap tree as an expandable checklist,
-  with completion state and overall progress %.
+  with completion state and overall progress %. Root/tab destination.
 - **LessonScreen** — recap of the previous topic, explanation + key points
   for the current one, plus "Take Quiz", "Ask the Tutor", and "Mark Complete".
 - **QuizScreen** — multiple-choice flow, score summary, retry.
 - **TutorScreen** — chat UI scoped to the current topic, with a mode selector
   (Explain / Quiz me / Review my code / Give an exercise) and a message list.
-- **SettingsScreen** — enter/clear the DeepSeek API key.
+- **SettingsScreen** — theme mode (System/Light/Dark) and the DeepSeek API
+  key. Root/tab destination.
+
+`RoadmapScreen` and `SettingsScreen` are the two bottom-nav tabs (see below);
+`LessonScreen`, `QuizScreen`, and `TutorScreen` are pushed on top without the
+bottom bar, each with its own back arrow.
 
 Backed by `RoadmapRepository`, `CurriculumRepository`, `ProgressRepository`,
-`TutorRepository`, `ApiKeyStore`.
+`TutorRepository`, `ApiKeyStore`, `ThemePreferences`.
+
+## Design system
+
+- **Color:** a hand-picked indigo/slate Material 3 scheme (`ui/theme/Color.kt`,
+  `Theme.kt`) — not the generic Material "baseline purple" template. Both a
+  light and a dark `ColorScheme` are fully specified (including explicit
+  `surfaceContainer*` roles), plus one semantic color (`successColor`) for
+  "completed"/"correct" states that sits outside the Material role system.
+- **Theme switching:** `ThemeMode` (`SYSTEM`/`LIGHT`/`DARK`), persisted via
+  `ThemePreferences` (plain `SharedPreferences`, no new dependency) and
+  exposed as a `StateFlow` read by `MainActivity`. Changing it in Settings
+  recomposes the whole app instantly — no restart needed.
+- **Typography:** [Inter](https://github.com/rsms/inter) for UI text and
+  [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) for code
+  blocks — both OFL-licensed variable fonts bundled as `.ttf` under
+  `res/font/` (see `docs/licenses/`), loaded via distinct `wght`-axis
+  `Font(...)` entries per weight in `ui/theme/Font.kt`. Replaces the system
+  default and the generic `FontFamily.Monospace`.
+- **Icons:** `androidx.compose.material:material-icons-core` only (the small
+  ~50-icon set, not `material-icons-extended`) — deliberately minimal. A few
+  UI spots (e.g. category expand/collapse) still use plain glyphs where no
+  suitable core icon exists.
+- **Shared components** (`ui/components/`): `KotlinTutorTopBar` (consistent
+  title/back-arrow/actions across every screen), `KotlinTutorBottomBar`
+  (the two root tabs), `AppLogoMark` (the ">" chevron badge, mirrored by the
+  launcher icon).
+- **App icon:** an adaptive icon (`res/drawable/ic_launcher_{background,
+  foreground}.xml`, referenced from `res/mipmap-anydpi-v26/`) — a solid
+  indigo background with a white ">" chevron. Adaptive-icon-only support
+  requires API 26+, which is why `minSdk` is 26 rather than 24 (no raster
+  fallback for API 24-25 was generated — negligible real-world device share
+  by 2026).
 
 ## AI Tutor
 

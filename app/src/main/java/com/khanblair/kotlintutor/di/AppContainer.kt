@@ -9,6 +9,8 @@ import com.khanblair.kotlintutor.data.progress.ProgressRepository
 import com.khanblair.kotlintutor.data.progress.RoomProgressRepository
 import com.khanblair.kotlintutor.data.roadmap.DefaultRoadmapRepository
 import com.khanblair.kotlintutor.data.roadmap.RoadmapRepository
+import com.khanblair.kotlintutor.data.settings.SharedPrefsThemePreferences
+import com.khanblair.kotlintutor.data.settings.ThemePreferences
 import com.khanblair.kotlintutor.data.tutor.ApiKeyStore
 import com.khanblair.kotlintutor.data.tutor.DefaultTutorRepository
 import com.khanblair.kotlintutor.data.tutor.EncryptedApiKeyStore
@@ -30,4 +32,6 @@ class AppContainer(context: Context) {
 
     val apiKeyStore: ApiKeyStore = EncryptedApiKeyStore(context.applicationContext)
     val tutorRepository: TutorRepository = DefaultTutorRepository(KtorDeepSeekApi(createDeepSeekHttpClient(), apiKeyStore))
+
+    val themePreferences: ThemePreferences = SharedPrefsThemePreferences(context.applicationContext)
 }

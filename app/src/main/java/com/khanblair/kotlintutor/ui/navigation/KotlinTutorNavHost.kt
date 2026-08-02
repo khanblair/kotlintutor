@@ -20,12 +20,6 @@ import com.khanblair.kotlintutor.ui.settings.SettingsViewModel
 import com.khanblair.kotlintutor.ui.tutor.TutorScreen
 import com.khanblair.kotlintutor.ui.tutor.TutorViewModel
 
-private const val ROUTE_ROADMAP = "roadmap"
-private const val ROUTE_LESSON = "lesson/{topicId}"
-private const val ROUTE_QUIZ = "quiz/{topicId}"
-private const val ROUTE_TUTOR = "tutor/{topicId}"
-private const val ROUTE_SETTINGS = "settings"
-
 @Composable
 fun KotlinTutorNavHost(
     container: AppContainer,
@@ -40,7 +34,7 @@ fun KotlinTutorNavHost(
             )
             RoadmapScreen(
                 viewModel = viewModel,
-                onLessonClick = { topicId -> navController.navigate("lesson/$topicId") },
+                onLessonClick = { topicId -> navController.navigate(lessonRoute(topicId)) },
                 onSettingsClick = { navController.navigate(ROUTE_SETTINGS) },
             )
         }
@@ -54,8 +48,8 @@ fun KotlinTutorNavHost(
             )
             LessonScreen(
                 viewModel = viewModel,
-                onTakeQuiz = { navController.navigate("quiz/$topicId") },
-                onAskTutor = { navController.navigate("tutor/$topicId") },
+                onTakeQuiz = { navController.navigate(quizRoute(topicId)) },
+                onAskTutor = { navController.navigate(tutorRoute(topicId)) },
                 onBack = { navController.popBackStack() },
             )
         }
@@ -69,6 +63,7 @@ fun KotlinTutorNavHost(
             )
             QuizScreen(
                 viewModel = viewModel,
+                onBack = { navController.popBackStack() },
                 onDone = { navController.popBackStack(ROUTE_ROADMAP, inclusive = false) },
             )
         }
@@ -88,7 +83,7 @@ fun KotlinTutorNavHost(
         composable(ROUTE_SETTINGS) {
             val viewModel: SettingsViewModel = viewModel(
                 factory = viewModelFactory {
-                    initializer { SettingsViewModel(container.apiKeyStore) }
+                    initializer { SettingsViewModel(container.apiKeyStore, container.themePreferences) }
                 },
             )
             SettingsScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
