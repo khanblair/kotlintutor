@@ -8,9 +8,9 @@ and a fully-authored companion curriculum ([docs/kotlin-tutor-content.md](docs/k
 - Browse the full Kotlin roadmap as an interactive checklist
 - Read lessons (recap, explanation, key points) and take quizzes per topic
 - Track completion progress per topic, stored locally on-device
-- **AI Tutor** (in progress): chat with an AI tutor per topic in one of four
-  modes — Explain, Quiz me, Review my code, Give an exercise — powered by
-  DeepSeek (`deepseek-v4-pro`) using your own API key
+- **AI Tutor**: chat with an AI tutor per topic in one of four modes —
+  Explain, Quiz me, Review my code, Give an exercise — powered by DeepSeek
+  (`deepseek-v4-pro`) using your own API key
 
 ## Tech stack
 
@@ -35,13 +35,15 @@ Tutor design, and build/testing details.
 
 ## Status
 
-Core app (roadmap, lessons, quizzes, progress tracking) is built and verified
-on-device. The AI Tutor feature and the 42-topic curriculum migration are
-planned next — see the implementation checklist for current progress.
+Built and verified on-device: roadmap, lessons (all 42 topics), quizzes,
+progress tracking, and the AI Tutor (chat UI, all 4 modes, Settings/API-key
+flow, and the missing-key error path). Real DeepSeek responses haven't been
+smoke-tested against a live key yet — everything up to the network call is
+verified; the call itself needs your key to confirm end-to-end.
 
 ## Setup
 
 Open in Android Studio (or `./gradlew assembleDebug` / `./gradlew test` from
-the CLI), JDK 17+. To use the AI Tutor once it ships, add your own DeepSeek
-API key in the app's Settings screen — the app never ships with a key and
-usage is billed to your DeepSeek account.
+the CLI), JDK 17+. To use the AI Tutor, add your own DeepSeek API key in the
+app's Settings screen — the app never ships with a key and usage is billed
+to your DeepSeek account.
