@@ -108,7 +108,6 @@ fun TutorScreen(
                     onValueChange = viewModel::updateInput,
                     modifier = Modifier.weight(1f),
                     placeholder = "Ask something…",
-                    shape = RoundedCornerShape(24.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 FilledIconButton(
