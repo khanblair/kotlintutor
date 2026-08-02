@@ -1,6 +1,7 @@
 package com.khanblair.kotlintutor.ui.tutor
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,10 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -37,7 +40,16 @@ fun TutorScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(uiState.topicTitle?.let { "Tutor — $it" } ?: "Tutor") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(uiState.topicTitle?.let { "Tutor — $it" } ?: "Tutor") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Text("←", style = MaterialTheme.typography.titleLarge)
+                    }
+                },
+            )
+        },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -45,12 +57,15 @@ fun TutorScreen(
                 .padding(16.dp)
                 .fillMaxSize(),
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 TutorMode.entries.forEach { mode ->
                     FilterChip(
                         selected = uiState.mode == mode,
                         onClick = { viewModel.selectMode(mode) },
-                        label = { Text(mode.label) },
+                        label = { Text(mode.label, maxLines = 1) },
                     )
                 }
             }

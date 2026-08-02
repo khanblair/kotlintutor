@@ -91,7 +91,7 @@ fun KotlinTutorNavHost(
                     initializer { SettingsViewModel(container.apiKeyStore) }
                 },
             )
-            SettingsScreen(viewModel = viewModel)
+            SettingsScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
         }
     }
 }
