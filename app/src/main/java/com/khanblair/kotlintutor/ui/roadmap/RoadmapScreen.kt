@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -74,6 +78,12 @@ private fun RoadmapContent(
     var expandedIds by remember { mutableStateOf(setOf<String>()) }
 
     Scaffold(
+        // Only the top inset is reserved here — the outer app-level Scaffold's
+        // bottom nav bar (KotlinTutorBottomBar) already reserves the bottom
+        // system inset itself. Reserving it again here (the Scaffold default)
+        // would leave a redundant gap between this screen's content and the
+        // bottom nav bar.
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
         topBar = {
             KotlinTutorTopBar(
                 title = {
