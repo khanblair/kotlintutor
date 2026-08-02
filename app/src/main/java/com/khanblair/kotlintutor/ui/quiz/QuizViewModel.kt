@@ -2,7 +2,7 @@ package com.khanblair.kotlintutor.ui.quiz
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.khanblair.kotlintutor.data.content.ContentRepository
+import com.khanblair.kotlintutor.data.curriculum.CurriculumRepository
 import com.khanblair.kotlintutor.data.progress.ProgressRepository
 import com.khanblair.kotlintutor.domain.QuizScorer
 import com.khanblair.kotlintutor.model.QuizQuestion
@@ -20,12 +20,14 @@ data class QuizUiState(
 
 class QuizViewModel(
     private val topicId: String,
-    contentRepository: ContentRepository,
+    curriculumRepository: CurriculumRepository,
     private val progressRepository: ProgressRepository,
     private val currentTimeMillis: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(QuizUiState(questions = contentRepository.getQuizQuestions(topicId)))
+    private val _uiState = MutableStateFlow(
+        QuizUiState(questions = curriculumRepository.getTopic(topicId)?.quiz ?: emptyList()),
+    )
     val uiState: StateFlow<QuizUiState> = _uiState
 
     fun selectAnswer(questionId: String, optionIndex: Int) {

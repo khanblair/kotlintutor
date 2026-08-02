@@ -2,8 +2,8 @@ package com.khanblair.kotlintutor.di
 
 import android.content.Context
 import androidx.room.Room
-import com.khanblair.kotlintutor.data.content.ContentRepository
-import com.khanblair.kotlintutor.data.content.DefaultContentRepository
+import com.khanblair.kotlintutor.data.curriculum.CurriculumRepository
+import com.khanblair.kotlintutor.data.curriculum.DefaultCurriculumRepository
 import com.khanblair.kotlintutor.data.progress.AppDatabase
 import com.khanblair.kotlintutor.data.progress.ProgressRepository
 import com.khanblair.kotlintutor.data.progress.RoomProgressRepository
@@ -20,5 +20,5 @@ class AppContainer(context: Context) {
 
     val progressRepository: ProgressRepository = RoomProgressRepository(database.progressDao())
     val roadmapRepository: RoadmapRepository = DefaultRoadmapRepository(progressRepository)
-    val contentRepository: ContentRepository = DefaultContentRepository()
+    val curriculumRepository: CurriculumRepository = DefaultCurriculumRepository()
 }

@@ -42,7 +42,7 @@ fun KotlinTutorNavHost(
             val viewModel: LessonViewModel = viewModel(
                 key = topicId,
                 factory = viewModelFactory {
-                    initializer { LessonViewModel(topicId, container.contentRepository, container.progressRepository) }
+                    initializer { LessonViewModel(topicId, container.curriculumRepository, container.progressRepository) }
                 },
             )
             LessonScreen(
@@ -56,7 +56,7 @@ fun KotlinTutorNavHost(
             val viewModel: QuizViewModel = viewModel(
                 key = topicId,
                 factory = viewModelFactory {
-                    initializer { QuizViewModel(topicId, container.contentRepository, container.progressRepository) }
+                    initializer { QuizViewModel(topicId, container.curriculumRepository, container.progressRepository) }
                 },
             )
             QuizScreen(

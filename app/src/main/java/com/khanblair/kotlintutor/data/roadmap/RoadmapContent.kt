@@ -2,16 +2,53 @@ package com.khanblair.kotlintutor.data.roadmap
 
 import com.khanblair.kotlintutor.model.RoadmapNode
 
-/** Topic IDs that have authored [com.khanblair.kotlintutor.model.Lesson] + quiz content in v1. */
+/**
+ * Topic IDs with authored [com.khanblair.kotlintutor.model.CurriculumTopic] content —
+ * the 42 topics transcribed from docs/kotlin-tutor-content.md into Curriculum.kt.
+ */
 val CONTENT_TOPIC_IDS: Set<String> = setOf(
+    "why-use-kotlin",
+    "history-of-kotlin",
+    "java-interoperability-intro",
     "val-vs-var",
+    "type-inference",
     "data-types",
+    "string-templates",
+    "type-checks-casts",
+    "print-println",
+    "lists-sets-maps",
+    "ranges",
     "conditional-expressions",
     "loops",
+    "throwing-exceptions",
     "functions-basics",
-    "lists-sets-maps",
+    "lambda-functions",
+    "higher-order-functions",
+    "extension-functions",
+    "standard-functions",
+    "read-only-vs-mutable",
+    "transformations",
+    "filtering",
+    "aggregate-operations",
+    "sequences",
     "defining-classes",
+    "properties-methods",
+    "inheritance",
+    "data-classes",
+    "sealed-class",
+    "object-declarations",
+    "class-generics",
+    "visibility-modifiers",
     "what-is-null-safety",
+    "nullability-check-operators",
+    "suspending-functions",
+    "coroutine-builders",
+    "asynchronous-flow",
+    "coroutines-best-practices",
+    "understanding-packages",
+    "standard-library",
+    "serialization",
+    "gradle",
 )
 
 private fun node(id: String, title: String, parentId: String?, category: String) =
