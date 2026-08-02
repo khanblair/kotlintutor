@@ -11,8 +11,8 @@ import org.junit.Test
 class CurriculumTest {
 
     @Test
-    fun `there are exactly 42 curriculum topics`() {
-        assertEquals(42, Curriculum.topics.size)
+    fun `there are exactly 127 curriculum topics`() {
+        assertEquals(127, Curriculum.topics.size)
     }
 
     @Test

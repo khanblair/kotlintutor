@@ -49,6 +49,114 @@ val CONTENT_TOPIC_IDS: Set<String> = setOf(
     "standard-library",
     "serialization",
     "gradle",
+    // Language Basics gaps
+    "setting-up-environment",
+    "code-organisation",
+    "main-function",
+    "comments",
+    "variables",
+    "integers",
+    "unsigned-integers",
+    "floats",
+    "characters",
+    "strings",
+    "booleans",
+    "arrays",
+    // Control Flow gaps
+    "label-loops",
+    "break-continue",
+    // Exceptions gap
+    "catching-exceptions",
+    // Functions gaps
+    "local-functions",
+    "member-functions",
+    "varargs",
+    "tail-recursive-functions",
+    "anonymous-functions",
+    "function-types",
+    // Collections gaps
+    "progressions",
+    "iterators",
+    // Collection Operations gaps
+    "retrieving-collection-parts",
+    "retrieving-single-elements",
+    "plus-minus-operators",
+    "ordering",
+    "grouping",
+    "collection-specific-operations",
+    // Classes & Objects gaps
+    "creating-instances",
+    "class-members",
+    "constructors",
+    "nested-inner-classes",
+    "abstract-class",
+    "interfaces",
+    "property-delegates",
+    // More on Classes & Objects gaps
+    "enum-class",
+    "inline-class",
+    "type-aliases",
+    // Null Safety gaps
+    "nullable-vs-non-nullable",
+    "safe-casts",
+    // Coroutines gap
+    "coroutines-behavior",
+    // Packages & Ecosystem gaps
+    "importing-packages",
+    "default-imports",
+    "opt-in-requirements",
+    // Documentation (new category)
+    "dokka",
+    "kdoc",
+    // Build Tools gaps
+    "gradle-plugins",
+    "maven",
+    "build-tool-api",
+    "teamcity",
+    // Kotlin Libraries (new category)
+    "test-library",
+    "coroutines-library",
+    "io-library",
+    "date-time",
+    "jvm-metadata",
+    // I/O (new category)
+    "creating-files",
+    "writing-reading-files",
+    "buffered-streams",
+    // IDEs (new category)
+    "intellij-idea",
+    "android-studio-ide",
+    "kotlin-notebook",
+    // Kotlin/Java Interop (new category)
+    "java-from-kotlin",
+    "kotlin-from-java",
+    // Kotlin Platforms (new category)
+    "server-side-apps",
+    "kotlin-js",
+    "kotlin-wasm",
+    "kotlin-multiplatform",
+    "kotlin-native",
+    "kotlin-scripting",
+    "c-interop",
+    "swift-objc-interop",
+    "compose-multiplatform",
+    // Android (new category)
+    "android-sdk",
+    "android-studio",
+    "android-jetpack",
+    // Kotlin Applications (new category)
+    "ktor",
+    "spring",
+    "quarkus",
+    "vertx",
+    // Data Analysis (new category)
+    "kotlin-notebooks",
+    "kotlin-dataframe",
+    "kandy",
+    // Competitive Programming (new category)
+    "competitive-programming",
+    // AI Development (new category)
+    "koog",
 )
 
 private fun node(id: String, title: String, parentId: String?, category: String) =
