@@ -1,6 +1,7 @@
 package com.khanblair.kotlintutor.ui.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -21,6 +22,12 @@ fun KotlinTutorApp(container: AppContainer) {
     val showBottomBar = currentRoute in BOTTOM_BAR_ROUTES
 
     Scaffold(
+        // Each screen has its own inner Scaffold/TopAppBar that already handles
+        // status-bar/nav-bar insets. Without this, the outer Scaffold's default
+        // contentWindowInsets (safeDrawing) reserves that space *again*, on top
+        // of the inner Scaffold's own reservation — doubling the padding at
+        // both the top (status bar) and bottom (nav bar) edges.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (showBottomBar) {
                 KotlinTutorBottomBar(
