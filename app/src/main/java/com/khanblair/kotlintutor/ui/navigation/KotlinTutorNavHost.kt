@@ -35,7 +35,6 @@ fun KotlinTutorNavHost(
             RoadmapScreen(
                 viewModel = viewModel,
                 onLessonClick = { topicId -> navController.navigate(lessonRoute(topicId)) },
-                onSettingsClick = { navController.navigate(ROUTE_SETTINGS) },
             )
         }
         composable(ROUTE_LESSON) { backStackEntry ->
@@ -86,7 +85,7 @@ fun KotlinTutorNavHost(
                     initializer { SettingsViewModel(container.apiKeyStore, container.themePreferences) }
                 },
             )
-            SettingsScreen(viewModel = viewModel, onBack = { navController.popBackStack() })
+            SettingsScreen(viewModel = viewModel)
         }
     }
 }

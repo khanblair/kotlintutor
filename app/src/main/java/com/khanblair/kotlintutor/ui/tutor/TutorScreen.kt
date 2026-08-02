@@ -27,7 +27,6 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.khanblair.kotlintutor.domain.TutorMode
+import com.khanblair.kotlintutor.ui.components.KotlinTutorTextField
 import com.khanblair.kotlintutor.ui.components.KotlinTutorTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,11 +103,11 @@ fun TutorScreen(
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
             ) {
-                OutlinedTextField(
+                KotlinTutorTextField(
                     value = uiState.input,
                     onValueChange = viewModel::updateInput,
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Ask something…") },
+                    placeholder = "Ask something…",
                     shape = RoundedCornerShape(24.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp))

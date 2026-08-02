@@ -21,13 +21,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -45,6 +45,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.khanblair.kotlintutor.model.RoadmapItem
 import com.khanblair.kotlintutor.ui.components.AppLogoMark
+import com.khanblair.kotlintutor.ui.components.FloatingNavBarReservedHeight
+import com.khanblair.kotlintutor.ui.components.KotlinTutorTextField
 import com.khanblair.kotlintutor.ui.components.KotlinTutorTopBar
 import com.khanblair.kotlintutor.ui.theme.successColor
 
@@ -52,7 +54,6 @@ import com.khanblair.kotlintutor.ui.theme.successColor
 fun RoadmapScreen(
     viewModel: RoadmapViewModel,
     onLessonClick: (topicId: String) -> Unit,
-    onSettingsClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     RoadmapContent(
@@ -60,7 +61,6 @@ fun RoadmapScreen(
         onTopicClick = { item ->
             if (item.node.hasContent) onLessonClick(item.node.id) else viewModel.markCompleted(item.node.id)
         },
-        onSettingsClick = onSettingsClick,
     )
 }
 
@@ -69,13 +69,31 @@ fun RoadmapScreen(
 private fun RoadmapContent(
     uiState: RoadmapUiState,
     onTopicClick: (RoadmapItem) -> Unit,
-    onSettingsClick: () -> Unit,
 ) {
     val categories = uiState.items.filter { it.node.parentId == null }
     val childrenByCategory = uiState.items.filter { it.node.parentId != null }.groupBy { it.node.parentId }
     val topicCount = uiState.items.count { it.node.parentId != null }
     val completedCount = uiState.items.count { it.node.parentId != null && it.isCompleted }
     var expandedIds by remember { mutableStateOf(setOf<String>()) }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val query = searchQuery.trim()
+    val isSearching = query.isNotBlank()
+    val visibleChildrenByCategory = if (isSearching) {
+        childrenByCategory
+            .mapValues { (_, children) -> children.filter { it.node.title.contains(query, ignoreCase = true) } }
+            .filterValues { it.isNotEmpty() }
+    } else {
+        childrenByCategory
+    }
+    val visibleCategories = if (isSearching) {
+        categories.filter { it.node.id in visibleChildrenByCategory }
+    } else {
+        categories
+    }
+    // Union with the user's manual expand/collapse state (not a replacement)
+    // so clearing the search restores whatever they had open before.
+    val effectiveExpandedIds = expandedIds + visibleChildrenByCategory.keys.takeIf { isSearching }.orEmpty()
 
     Scaffold(
         // Only the top inset is reserved here — the outer app-level Scaffold's
@@ -92,30 +110,53 @@ private fun RoadmapContent(
                         Text("Kotlin Roadmap", modifier = Modifier.padding(start = 10.dp))
                     }
                 },
-                actions = {
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Filled.Settings, contentDescription = "Settings")
-                    }
-                },
             )
         },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp + FloatingNavBarReservedHeight),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item { ProgressHeader(completedCount = completedCount, totalCount = topicCount, percent = uiState.completionPercent) }
 
-            items(categories, key = { it.node.id }) { category ->
-                val expanded = category.node.id in expandedIds
+            item {
+                KotlinTutorTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = "Search topics",
+                    leadingIcon = Icons.Filled.Search,
+                    leadingIconDescription = null,
+                    trailingIcon = if (searchQuery.isNotEmpty()) Icons.Filled.Clear else null,
+                    trailingIconDescription = "Clear search",
+                    onTrailingIconClick = if (searchQuery.isNotEmpty()) {
+                        { searchQuery = "" }
+                    } else {
+                        null
+                    },
+                )
+            }
+
+            if (isSearching && visibleCategories.isEmpty()) {
+                item {
+                    Text(
+                        text = "No topics match \"$query\"",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                }
+            }
+
+            items(visibleCategories, key = { it.node.id }) { category ->
+                val expanded = category.node.id in effectiveExpandedIds
                 CategoryCard(
                     title = category.node.title,
                     expanded = expanded,
                     onToggle = {
                         expandedIds = if (expanded) expandedIds - category.node.id else expandedIds + category.node.id
                     },
-                    children = childrenByCategory[category.node.id].orEmpty(),
+                    children = visibleChildrenByCategory[category.node.id].orEmpty(),
                     onTopicClick = onTopicClick,
                 )
             }

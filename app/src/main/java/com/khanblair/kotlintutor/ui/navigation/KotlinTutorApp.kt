@@ -1,11 +1,10 @@
 package com.khanblair.kotlintutor.ui.navigation
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -21,30 +20,24 @@ fun KotlinTutorApp(container: AppContainer) {
     val currentRoute = backStackEntry?.destination?.route
     val showBottomBar = currentRoute in BOTTOM_BAR_ROUTES
 
-    Scaffold(
-        // Each screen has its own inner Scaffold/TopAppBar that already handles
-        // status-bar/nav-bar insets. Without this, the outer Scaffold's default
-        // contentWindowInsets (safeDrawing) reserves that space *again*, on top
-        // of the inner Scaffold's own reservation — doubling the padding at
-        // both the top (status bar) and bottom (nav bar) edges.
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        bottomBar = {
-            if (showBottomBar) {
-                KotlinTutorBottomBar(
-                    currentRoute = currentRoute,
-                    onNavigate = { route ->
-                        navController.navigate(route) {
-                            popUpTo(ROUTE_ROADMAP) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
-            }
-        },
-    ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
-            KotlinTutorNavHost(container = container, navController = navController)
+    // A plain Box overlay, not a Scaffold with a bottomBar slot: that slot
+    // reserves layout height for its content, which would prevent the pill
+    // nav bar from floating over the screen content beneath it. Each screen
+    // has its own inner Scaffold handling its own status-bar inset.
+    Box(modifier = Modifier.fillMaxSize()) {
+        KotlinTutorNavHost(container = container, navController = navController)
+        if (showBottomBar) {
+            KotlinTutorBottomBar(
+                currentRoute = currentRoute,
+                onNavigate = { route ->
+                    navController.navigate(route) {
+                        popUpTo(ROUTE_ROADMAP) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }

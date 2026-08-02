@@ -12,13 +12,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.khanblair.kotlintutor.model.Recap
+import com.khanblair.kotlintutor.ui.components.KotlinTutorButton
+import com.khanblair.kotlintutor.ui.components.KotlinTutorSecondaryButton
 import com.khanblair.kotlintutor.ui.components.KotlinTutorTopBar
 import com.khanblair.kotlintutor.ui.theme.codeFontFamily
 
@@ -82,7 +82,7 @@ fun LessonScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    OutlinedButton(
+                    KotlinTutorSecondaryButton(
                         onClick = {
                             viewModel.markComplete()
                             onBack()
@@ -92,11 +92,11 @@ fun LessonScreen(
                         Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
                         Text("Complete")
                     }
-                    OutlinedButton(onClick = onAskTutor, modifier = Modifier.weight(1f)) {
+                    KotlinTutorSecondaryButton(onClick = onAskTutor, modifier = Modifier.weight(1f)) {
                         Text("Ask Tutor")
                     }
                 }
-                Button(
+                KotlinTutorButton(
                     onClick = onTakeQuiz,
                     modifier = Modifier
                         .fillMaxWidth()
