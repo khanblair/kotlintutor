@@ -1,38 +1,47 @@
 # Kotlin Tutor
 
-An Android app for learning Kotlin, structured around the [roadmap.sh Kotlin roadmap](docs/kotlin.pdf).
+An Android app for learning Kotlin, structured around the [roadmap.sh Kotlin roadmap](docs/kotlin.pdf)
+and a fully-authored companion curriculum ([docs/kotlin-tutor-content.md](docs/kotlin-tutor-content.md)).
 
 ## What it does
 
 - Browse the full Kotlin roadmap as an interactive checklist
-- Read lessons and take quizzes for core language topics
+- Read lessons (recap, explanation, key points) and take quizzes per topic
 - Track completion progress per topic, stored locally on-device
+- **AI Tutor** (in progress): chat with an AI tutor per topic in one of four
+  modes — Explain, Quiz me, Review my code, Give an exercise — powered by
+  DeepSeek (`deepseek-v4-pro`) using your own API key
 
 ## Tech stack
 
 - Kotlin + Jetpack Compose (Material 3)
 - MVVM (Compose screens -> ViewModels -> Repositories)
 - Room for local progress/quiz-score persistence
+- Ktor Client + kotlinx.serialization for the DeepSeek chat API (the app's
+  only network dependency)
 - Navigation-Compose
-- No backend, no login — fully offline, single-user
+- No accounts, no backend server — the AI Tutor calls DeepSeek directly using
+  a key you supply in Settings; everything else is fully offline
 
-## Content scope (v1)
+## Content scope
 
-Full lessons + quizzes ship for the core language-fundamentals topics (val/var,
-data types, control flow, functions, collections basics, classes & objects
-basics, null safety). The roadmap screen shows every node from the source
-roadmap as a checklist regardless — topics without authored content yet can
-still be marked done manually.
+Full lessons + quizzes ship for 42 core-language topics (`docs/kotlin-tutor-content.md`),
+covering language basics through coroutines and packaging. The roadmap screen
+shows every node from the source roadmap as a checklist regardless — topics
+without authored content can still be marked done manually.
 
-See [docs/GUIDE.md](docs/GUIDE.md) for the full architecture, data model, and
-build/testing details.
+See [docs/GUIDE.md](docs/GUIDE.md) for the full architecture, data model, AI
+Tutor design, and build/testing details.
 
 ## Status
 
-Early development — project scaffolding not yet created. See the
-implementation plan/checklist for current progress.
+Core app (roadmap, lessons, quizzes, progress tracking) is built and verified
+on-device. The AI Tutor feature and the 42-topic curriculum migration are
+planned next — see the implementation checklist for current progress.
 
 ## Setup
 
-Once scaffolded: open in Android Studio, JDK 17+, standard Gradle sync and
-run. (Details will be filled in once the project is scaffolded.)
+Open in Android Studio (or `./gradlew assembleDebug` / `./gradlew test` from
+the CLI), JDK 17+. To use the AI Tutor once it ships, add your own DeepSeek
+API key in the app's Settings screen — the app never ships with a key and
+usage is billed to your DeepSeek account.
