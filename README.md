@@ -29,19 +29,20 @@ and a fully-authored companion curriculum ([docs/kotlin-tutor-content.md](docs/k
 
 ## Content scope
 
-Full lessons + quizzes ship for 127 topics: the original 42 transcribed from
-`docs/kotlin-tutor-content.md`, plus 85 authored directly against the source
-roadmap — covering language basics through coroutines, the ecosystem, and
-Android. That is 381 explained quiz questions in total. The roadmap screen
-shows all 150 nodes from the source roadmap as a checklist regardless — the 23
-topics without authored content can still be marked done manually.
+Full lessons + quizzes ship for all 126 leaf topics on the roadmap: the original
+42 transcribed from `docs/kotlin-tutor-content.md`, plus 84 authored directly
+against the source roadmap, covering language basics through coroutines, the
+ecosystem, and Android. One further lesson is attached to the Competitive
+Programming category node, making 127 authored lessons in total, with 381
+explained quiz questions. The roadmap screen shows all 150 nodes from the source
+roadmap as a checklist; the remaining 23 nodes are category headers.
 
 See [docs/GUIDE.md](docs/GUIDE.md) for the full architecture, data model, AI
 Tutor design, and build/testing details.
 
 ## Status
 
-Built and verified on-device: roadmap, lessons (all 127 topics), quizzes,
+Built and verified on-device: roadmap, lessons (all 126 roadmap topics), quizzes,
 progress tracking, and the AI Tutor (chat UI, all 4 modes, Settings/API-key
 flow, and the missing-key error path). The tutor streams responses
 token-by-token with a Stop control, request/socket timeouts, and actionable

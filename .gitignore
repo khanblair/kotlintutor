@@ -28,3 +28,6 @@ build/
 /keystore/
 # Bwat per-workspace state
 .bwat/
+
+# Brag video output
+brag-output/
