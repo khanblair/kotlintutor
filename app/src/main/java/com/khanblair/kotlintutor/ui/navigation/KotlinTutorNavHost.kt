@@ -1,6 +1,7 @@
 package com.khanblair.kotlintutor.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -57,7 +58,14 @@ fun KotlinTutorNavHost(
             val viewModel: QuizViewModel = viewModel(
                 key = topicId,
                 factory = viewModelFactory {
-                    initializer { QuizViewModel(topicId, container.curriculumRepository, container.progressRepository) }
+                    initializer {
+                        QuizViewModel(
+                            topicId,
+                            container.curriculumRepository,
+                            container.progressRepository,
+                            createSavedStateHandle(),
+                        )
+                    }
                 },
             )
             QuizScreen(

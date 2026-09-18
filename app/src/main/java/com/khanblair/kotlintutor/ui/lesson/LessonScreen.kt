@@ -22,8 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import com.khanblair.kotlintutor.R
 import com.khanblair.kotlintutor.model.Recap
 import com.khanblair.kotlintutor.ui.components.KotlinTutorButton
 import com.khanblair.kotlintutor.ui.components.KotlinTutorSecondaryButton
@@ -41,11 +43,11 @@ fun LessonScreen(
     val topic = viewModel.topic
 
     Scaffold(
-        topBar = { KotlinTutorTopBar(title = { Text(topic?.title ?: "Lesson") }, onBack = onBack) },
+        topBar = { KotlinTutorTopBar(title = { Text(topic?.title ?: stringResource(R.string.lesson_fallback_title)) }, onBack = onBack) },
     ) { padding ->
         if (topic == null) {
             Column(modifier = Modifier.padding(padding).padding(16.dp)) {
-                Text("This topic doesn't have a lesson yet.")
+                Text(stringResource(R.string.lesson_missing))
             }
             return@Scaffold
         }
@@ -66,7 +68,7 @@ fun LessonScreen(
                 }
                 item {
                     Text(
-                        text = "Key points & pitfalls",
+                        text = stringResource(R.string.lesson_key_points),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(bottom = 8.dp),
                     )
@@ -90,10 +92,10 @@ fun LessonScreen(
                         modifier = Modifier.weight(1f),
                     ) {
                         Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
-                        Text("Complete")
+                        Text(stringResource(R.string.lesson_complete))
                     }
                     KotlinTutorSecondaryButton(onClick = onAskTutor, modifier = Modifier.weight(1f)) {
-                        Text("Ask Tutor")
+                        Text(stringResource(R.string.lesson_ask_tutor))
                     }
                 }
                 KotlinTutorButton(
@@ -102,7 +104,7 @@ fun LessonScreen(
                         .fillMaxWidth()
                         .padding(top = 12.dp),
                 ) {
-                    Text("Take Quiz")
+                    Text(stringResource(R.string.lesson_take_quiz))
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
@@ -159,7 +161,7 @@ private fun RecapCard(recap: Recap, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(end = 6.dp),
                 )
                 Text(
-                    text = "Recap — ${recap.previousTopicTitle}",
+                    text = stringResource(R.string.lesson_recap, recap.previousTopicTitle),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )
@@ -171,14 +173,14 @@ private fun RecapCard(recap: Recap, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(top = 6.dp),
             )
             Text(
-                text = "Quick check: ${recap.quickCheckQuestion}",
+                text = stringResource(R.string.lesson_quick_check, recap.quickCheckQuestion),
                 style = MaterialTheme.typography.bodySmall,
                 fontStyle = FontStyle.Italic,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.padding(top = 8.dp),
             )
             Text(
-                text = "→ ${recap.quickCheckAnswer}",
+                text = stringResource(R.string.lesson_quick_check_answer, recap.quickCheckAnswer),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.padding(top = 2.dp),

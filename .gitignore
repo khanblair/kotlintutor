@@ -19,5 +19,12 @@ build/
 # Log files
 *.log
 
+# Local secrets (none committed today; never start)
+.env
+.env.*
+!.env.example
+
 # Release signing key — never commit; back this up somewhere safe instead
 /keystore/
+# Bwat per-workspace state
+.bwat/

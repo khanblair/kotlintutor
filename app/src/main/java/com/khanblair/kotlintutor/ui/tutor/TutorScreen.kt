@@ -9,16 +9,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,12 +34,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khanblair.kotlintutor.R
 import com.khanblair.kotlintutor.domain.TutorMode
 import com.khanblair.kotlintutor.ui.components.KotlinTutorTextField
 import com.khanblair.kotlintutor.ui.components.KotlinTutorTopBar
@@ -46,12 +53,29 @@ fun TutorScreen(
     viewModel: TutorViewModel,
     onBack: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
+
+    val itemCount = uiState.messages.size + if (uiState.isSending) 1 else 0
+    val lastMessageContent = uiState.messages.lastOrNull()?.content
+    // Autoscroll when a new message appears or the in-progress reply grows —
+    // but only when the user is already near the bottom, so reading history
+    // mid-stream isn't interrupted.
+    LaunchedEffect(lastMessageContent, itemCount) {
+        val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        val atBottom = lastVisible == null || lastVisible >= listState.layoutInfo.totalItemsCount - 2
+        if (atBottom && itemCount > 0) listState.animateScrollToItem(itemCount - 1)
+    }
 
     Scaffold(
         topBar = {
             KotlinTutorTopBar(
-                title = { Text(uiState.topicTitle?.let { "Tutor — $it" } ?: "Tutor") },
+                title = {
+                    Text(
+                        uiState.topicTitle?.let { stringResource(R.string.tutor_title_with_topic, it) }
+                            ?: stringResource(R.string.tutor_title),
+                    )
+                },
                 onBack = onBack,
             )
         },
@@ -60,6 +84,7 @@ fun TutorScreen(
             modifier = Modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
+                .imePadding()
                 .fillMaxSize(),
         ) {
             Row(
@@ -71,18 +96,24 @@ fun TutorScreen(
                 TutorMode.entries.forEach { mode ->
                     FilterChip(
                         selected = uiState.mode == mode,
+                        enabled = !uiState.isSending,
                         onClick = { viewModel.selectMode(mode) },
-                        label = { Text(mode.label, maxLines = 1) },
+                        label = { Text(stringResource(mode.labelRes()), maxLines = 1) },
                     )
                 }
             }
 
             if (uiState.missingApiKey) {
-                InlineNotice(text = "Add your DeepSeek API key in Settings to use the Tutor.")
+                InlineNotice(text = stringResource(R.string.tutor_missing_key))
             }
-            uiState.error?.let { message -> InlineNotice(text = "Error: $message") }
+            uiState.error?.let { message ->
+                // Escape '%' — stringResource formats args via String.format, and
+                // error text (e.g. a network exception message) may contain one.
+                InlineNotice(text = stringResource(R.string.tutor_error_prefix, message.replace("%", "%%")))
+            }
 
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 8.dp),
@@ -107,18 +138,34 @@ fun TutorScreen(
                     value = uiState.input,
                     onValueChange = viewModel::updateInput,
                     modifier = Modifier.weight(1f),
-                    placeholder = "Ask something…",
+                    placeholder = stringResource(R.string.tutor_input_placeholder),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                FilledIconButton(
-                    onClick = viewModel::send,
-                    enabled = !uiState.isSending && uiState.input.isNotBlank(),
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
+                if (uiState.isSending) {
+                    // Streaming in progress: the send button becomes Stop so the
+                    // in-flight request can be aborted instead of waiting it out.
+                    FilledIconButton(onClick = viewModel::cancelSend) {
+                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.tutor_stop))
+                    }
+                } else {
+                    FilledIconButton(
+                        onClick = viewModel::send,
+                        enabled = uiState.input.isNotBlank(),
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.tutor_send))
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun TutorMode.labelRes(): Int = when (this) {
+    TutorMode.EXPLAIN -> R.string.tutor_mode_explain
+    TutorMode.QUIZ_ME -> R.string.tutor_mode_quiz
+    TutorMode.REVIEW_MY_CODE -> R.string.tutor_mode_review
+    TutorMode.GIVE_EXERCISE -> R.string.tutor_mode_exercise
 }
 
 @Composable
@@ -148,7 +195,7 @@ private fun EmptyState(mode: TutorMode) {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "Mode: ${mode.label}\nAsk a question below to start the conversation.",
+            text = stringResource(R.string.tutor_empty_state, stringResource(mode.labelRes())),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -179,17 +226,21 @@ private fun MessageBubble(message: TutorMessage) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
     ) {
-        Text(
-            text = message.content,
-            modifier = Modifier
-                .widthIn(max = 300.dp)
-                .background(
-                    if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
-                    bubbleShape(isUser),
-                )
-                .padding(horizontal = 14.dp, vertical = 10.dp),
-            color = if (isUser) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-        )
+        // SelectionContainer makes replies (and the code inside them) selectable
+        // and copyable — a bare Text isn't.
+        SelectionContainer {
+            Text(
+                text = message.content,
+                modifier = Modifier
+                    .widthIn(max = 300.dp)
+                    .background(
+                        if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+                        bubbleShape(isUser),
+                    )
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                color = if (isUser) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+            )
+        }
     }
 }
 

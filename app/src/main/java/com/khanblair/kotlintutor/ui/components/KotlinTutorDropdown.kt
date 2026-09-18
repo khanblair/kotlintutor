@@ -39,7 +39,7 @@ fun <T> KotlinTutorDropdown(
     label: String,
     selected: T,
     options: List<T>,
-    labelFor: (T) -> String,
+    labelFor: @Composable (T) -> String,
     onSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {

@@ -24,7 +24,13 @@ class AppContainer(context: Context) {
         context.applicationContext,
         AppDatabase::class.java,
         "kotlintutor.db",
-    ).build()
+    )
+        // No schema migrations exist yet (schema v1, exportSchema enabled in
+        // AppDatabase so future migrations can be authored against history).
+        // Until real migrations are written, an incompatible schema change
+        // clears local progress instead of crashing on startup.
+        .fallbackToDestructiveMigration(dropAllTables = true)
+        .build()
 
     val progressRepository: ProgressRepository = RoomProgressRepository(database.progressDao())
     val roadmapRepository: RoadmapRepository = DefaultRoadmapRepository(progressRepository)

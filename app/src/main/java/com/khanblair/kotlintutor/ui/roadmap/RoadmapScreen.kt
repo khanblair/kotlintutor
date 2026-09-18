@@ -33,16 +33,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khanblair.kotlintutor.R
 import com.khanblair.kotlintutor.model.RoadmapItem
 import com.khanblair.kotlintutor.ui.components.AppLogoMark
 import com.khanblair.kotlintutor.ui.components.FloatingNavBarReservedHeight
@@ -55,7 +58,7 @@ fun RoadmapScreen(
     viewModel: RoadmapViewModel,
     onLessonClick: (topicId: String) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     RoadmapContent(
         uiState = uiState,
         onTopicClick = { item ->
@@ -74,8 +77,10 @@ private fun RoadmapContent(
     val childrenByCategory = uiState.items.filter { it.node.parentId != null }.groupBy { it.node.parentId }
     val topicCount = uiState.items.count { it.node.parentId != null }
     val completedCount = uiState.items.count { it.node.parentId != null && it.isCompleted }
-    var expandedIds by remember { mutableStateOf(setOf<String>()) }
-    var searchQuery by remember { mutableStateOf("") }
+    // Saveable so rotation/process death keeps the search query and which
+    // categories are expanded (plain remember resets them).
+    var expandedIds by rememberSaveable { mutableStateOf(emptyList<String>()) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
 
     val query = searchQuery.trim()
     val isSearching = query.isNotBlank()
@@ -93,7 +98,7 @@ private fun RoadmapContent(
     }
     // Union with the user's manual expand/collapse state (not a replacement)
     // so clearing the search restores whatever they had open before.
-    val effectiveExpandedIds = expandedIds + visibleChildrenByCategory.keys.takeIf { isSearching }.orEmpty()
+    val effectiveExpandedIds = (expandedIds + visibleChildrenByCategory.keys.takeIf { isSearching }.orEmpty()).toSet()
 
     Scaffold(
         // Only the top inset is reserved here — the outer app-level Scaffold's
@@ -107,7 +112,7 @@ private fun RoadmapContent(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AppLogoMark(size = 28.dp)
-                        Text("Kotlin Roadmap", modifier = Modifier.padding(start = 10.dp))
+                        Text(stringResource(R.string.roadmap_title), modifier = Modifier.padding(start = 10.dp))
                     }
                 },
             )
@@ -124,11 +129,11 @@ private fun RoadmapContent(
                 KotlinTutorTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    placeholder = "Search topics",
+                    placeholder = stringResource(R.string.roadmap_search_placeholder),
                     leadingIcon = Icons.Filled.Search,
                     leadingIconDescription = null,
                     trailingIcon = if (searchQuery.isNotEmpty()) Icons.Filled.Clear else null,
-                    trailingIconDescription = "Clear search",
+                    trailingIconDescription = stringResource(R.string.roadmap_clear_search),
                     onTrailingIconClick = if (searchQuery.isNotEmpty()) {
                         { searchQuery = "" }
                     } else {
@@ -140,7 +145,9 @@ private fun RoadmapContent(
             if (isSearching && visibleCategories.isEmpty()) {
                 item {
                     Text(
-                        text = "No topics match \"$query\"",
+                        // Escape '%' — stringResource formats args via String.format,
+                        // and a raw '%' in the user's query would crash the screen.
+                        text = stringResource(R.string.roadmap_no_results, query.replace("%", "%%")),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 8.dp),
@@ -154,7 +161,13 @@ private fun RoadmapContent(
                     title = category.node.title,
                     expanded = expanded,
                     onToggle = {
-                        expandedIds = if (expanded) expandedIds - category.node.id else expandedIds + category.node.id
+                        // While searching, every matching category is forced open;
+                        // toggling here would silently corrupt the user's manual
+                        // expansion state (a visible collapse that reverts, then
+                        // losing the manual entry once the search is cleared).
+                        if (!isSearching) {
+                            expandedIds = if (expanded) expandedIds - category.node.id else expandedIds + category.node.id
+                        }
                     },
                     children = visibleChildrenByCategory[category.node.id].orEmpty(),
                     onTopicClick = onTopicClick,
@@ -173,7 +186,7 @@ private fun ProgressHeader(completedCount: Int, totalCount: Int, percent: Int) {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                text = "Your progress",
+                text = stringResource(R.string.roadmap_your_progress),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
@@ -187,7 +200,7 @@ private fun ProgressHeader(completedCount: Int, totalCount: Int, percent: Int) {
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    text = "  $completedCount of $totalCount topics",
+                    text = stringResource(R.string.roadmap_topics_of, completedCount, totalCount),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(bottom = 4.dp),
@@ -232,7 +245,7 @@ private fun CategoryCard(
                 Text(title, style = MaterialTheme.typography.titleMedium)
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowDown,
-                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    contentDescription = stringResource(if (expanded) R.string.roadmap_collapse else R.string.roadmap_expand),
                     modifier = Modifier.rotate(rotation),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -258,9 +271,16 @@ private fun TopicRow(item: RoadmapItem, onClick: () -> Unit) {
             Text(item.node.title, style = MaterialTheme.typography.bodyLarge)
             if (!item.node.hasContent) {
                 Text(
-                    text = "Content coming soon — tap to mark done",
+                    text = stringResource(R.string.roadmap_content_coming),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            item.lastQuizScore?.let { score ->
+                Text(
+                    text = stringResource(R.string.roadmap_last_quiz, score),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -271,7 +291,7 @@ private fun TopicRow(item: RoadmapItem, onClick: () -> Unit) {
 @Composable
 private fun StatusDot(completed: Boolean) {
     if (completed) {
-        Icon(Icons.Filled.CheckCircle, contentDescription = "Completed", tint = successColor)
+        Icon(Icons.Filled.CheckCircle, contentDescription = stringResource(R.string.roadmap_completed), tint = successColor)
     } else {
         Box(
             modifier = Modifier

@@ -23,12 +23,14 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khanblair.kotlintutor.R
 import com.khanblair.kotlintutor.model.QuizQuestion
 import com.khanblair.kotlintutor.ui.components.KotlinTutorButton
 import com.khanblair.kotlintutor.ui.components.KotlinTutorSecondaryButton
@@ -42,10 +44,10 @@ fun QuizScreen(
     onBack: () -> Unit,
     onDone: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = { KotlinTutorTopBar(title = { Text("Quiz") }, onBack = onBack) },
+        topBar = { KotlinTutorTopBar(title = { Text(stringResource(R.string.quiz_title)) }, onBack = onBack) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -70,8 +72,8 @@ fun QuizScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    KotlinTutorSecondaryButton(onClick = { viewModel.retry() }, modifier = Modifier.weight(1f)) { Text("Retry") }
-                    KotlinTutorButton(onClick = onDone, modifier = Modifier.weight(1f)) { Text("Done") }
+                    KotlinTutorSecondaryButton(onClick = { viewModel.retry() }, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.quiz_retry)) }
+                    KotlinTutorButton(onClick = onDone, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.quiz_done)) }
                 }
             } else {
                 KotlinTutorButton(
@@ -79,7 +81,7 @@ fun QuizScreen(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = uiState.answers.size == uiState.questions.size,
                 ) {
-                    Text("Submit")
+                    Text(stringResource(R.string.quiz_submit))
                 }
             }
         }
@@ -96,7 +98,7 @@ private fun ScoreBanner(score: Int, total: Int) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
     ) {
         Text(
-            text = "Score: $score / $total",
+            text = stringResource(R.string.quiz_score, score, total),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(16.dp),
@@ -176,7 +178,7 @@ private fun OptionRow(
             colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
         )
         Text(option, modifier = Modifier.weight(1f))
-        if (isCorrectAnswer) Icon(Icons.Filled.Check, contentDescription = "Correct answer", tint = successColor)
-        if (isWrongSelection) Icon(Icons.Filled.Close, contentDescription = "Your answer", tint = MaterialTheme.colorScheme.error)
+        if (isCorrectAnswer) Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.quiz_correct_answer), tint = successColor)
+        if (isWrongSelection) Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.quiz_your_answer), tint = MaterialTheme.colorScheme.error)
     }
 }

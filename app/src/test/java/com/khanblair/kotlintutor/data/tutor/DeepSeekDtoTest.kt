@@ -1,6 +1,5 @@
 package com.khanblair.kotlintutor.data.tutor
 
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
@@ -15,9 +14,23 @@ class DeepSeekDtoTest {
         val request = ChatCompletionRequest(messages = listOf(ChatMessage("user", "hello")))
         val encoded = json.encodeToString(request)
         assertEquals(
-            """{"model":"deepseek-v4-pro","messages":[{"role":"user","content":"hello"}],"stream":false}""",
+            """{"model":"deepseek-v4-pro","messages":[{"role":"user","content":"hello"}],"stream":true}""",
             encoded,
         )
+    }
+
+    @Test
+    fun `stream chunks decode the incremental delta content`() {
+        val raw = """{"choices":[{"delta":{"content":"Hello "}}]}"""
+        val decoded = json.decodeFromString<StreamChunk>(raw)
+        assertEquals("Hello ", decoded.choices.first().delta?.content)
+    }
+
+    @Test
+    fun `stream chunks with a null delta content decode without error`() {
+        val raw = """{"choices":[{"delta":{"content":null},"finish_reason":"stop"}]}"""
+        val decoded = json.decodeFromString<StreamChunk>(raw)
+        assertEquals(null, decoded.choices.first().delta?.content)
     }
 
     @Test

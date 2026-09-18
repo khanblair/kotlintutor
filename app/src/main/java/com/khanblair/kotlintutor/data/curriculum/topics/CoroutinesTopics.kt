@@ -8,7 +8,7 @@ val coroutinesTopics: List<CurriculumTopic> = listOf(
     CurriculumTopic(
         id = "suspending-functions",
         title = "Suspending Functions",
-        category = "Coroutines & Async",
+        category = "Coroutines & Async Programming",
         recap = Recap(
             previousTopicTitle = "Nullability Operators",
             recapText = "?. safe call, ?: Elvis fallback, !! assert (avoid), as? safe cast.",

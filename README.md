@@ -29,21 +29,26 @@ and a fully-authored companion curriculum ([docs/kotlin-tutor-content.md](docs/k
 
 ## Content scope
 
-Full lessons + quizzes ship for 42 core-language topics (`docs/kotlin-tutor-content.md`),
-covering language basics through coroutines and packaging. The roadmap screen
-shows every node from the source roadmap as a checklist regardless — topics
-without authored content can still be marked done manually.
+Full lessons + quizzes ship for 127 topics: the original 42 transcribed from
+`docs/kotlin-tutor-content.md`, plus 85 authored directly against the source
+roadmap — covering language basics through coroutines, the ecosystem, and
+Android. That is 381 explained quiz questions in total. The roadmap screen
+shows all 150 nodes from the source roadmap as a checklist regardless — the 23
+topics without authored content can still be marked done manually.
 
 See [docs/GUIDE.md](docs/GUIDE.md) for the full architecture, data model, AI
 Tutor design, and build/testing details.
 
 ## Status
 
-Built and verified on-device: roadmap, lessons (all 42 topics), quizzes,
+Built and verified on-device: roadmap, lessons (all 127 topics), quizzes,
 progress tracking, and the AI Tutor (chat UI, all 4 modes, Settings/API-key
-flow, and the missing-key error path). Real DeepSeek responses haven't been
-smoke-tested against a live key yet — everything up to the network call is
-verified; the call itself needs your key to confirm end-to-end.
+flow, and the missing-key error path). The tutor streams responses
+token-by-token with a Stop control, request/socket timeouts, and actionable
+HTTP error messages. Real DeepSeek responses still need a live key to confirm
+end-to-end — the code path up to the network call (including the manifest
+`INTERNET` permission that was missing at first) is verified; the call itself
+needs your key to confirm.
 
 ## Setup
 

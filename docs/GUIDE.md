@@ -141,11 +141,14 @@ error. DeepSeek call failures (see above) are surfaced inline, not fatal.
 
 ## Testing
 
-- Unit: repositories, quiz scoring logic, progress %, ViewModel state
-  transitions (JUnit + `kotlinx-coroutines-test`), `TutorMode` system-prompt
-  building (pure function, no network), DeepSeek request/response DTO
-  serialization round-trips.
-- UI: Compose UI tests for roadmap navigation and the quiz answer flow.
+- Unit (JVM, `./gradlew test`): curriculum content integrity (topic IDs match
+  roadmap leaves, recap chains, quiz shape/uniqueness), roadmap graph
+  structure, progress-percentage math, quiz scoring, DeepSeek request/response
+  DTO round-trips, SSE stream-chunk parsing and HTTP-error mapping, and
+  `TutorMode` system-prompt building (pure function, no network).
+- UI/ViewModel: no instrumentation tests yet — `androidTest` is empty
+  scaffolding and ViewModels aren't covered by unit tests; verify UI flows
+  manually or add tests before growing the app.
 - The DeepSeek network call itself isn't exercised by automated tests (no
   live key in CI); it's verified manually against a real key.
 
@@ -154,5 +157,5 @@ error. DeepSeek call failures (see above) are surfaced inline, not fatal.
 - In-app code playground / running Kotlin snippets (the AI Tutor's "Review
   my code" mode reviews pasted code via the LLM — it doesn't execute it)
 - User accounts, cloud sync, multi-device progress
-- Streaming AI responses, persisted chat history
+- Persisted chat history (conversation resets when the screen closes)
 - iOS/desktop targets (Compose Multiplatform)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The secure prefs file holds the user's DeepSeek API key. Its encryption key
+     lives in the Android Keystore, which is never backed up — so if the encrypted
+     blob were restored to a new device it would be permanently undecryptable.
+     Excluding it means a restored device simply shows the missing-key state and
+     the user re-enters the key in Settings (the app already handles that path). -->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="kotlintutor_secure_prefs.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="kotlintutor_secure_prefs.xml" />
+    </device-transfer>
+</data-extraction-rules>

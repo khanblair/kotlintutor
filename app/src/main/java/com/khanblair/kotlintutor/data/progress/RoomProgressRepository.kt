@@ -9,22 +9,10 @@ class RoomProgressRepository(private val dao: ProgressDao) : ProgressRepository 
     override fun observeProgress(): Flow<List<TopicProgress>> =
         dao.observeAll().map { entities -> entities.map { it.toDomain() } }
 
-    override suspend fun markCompleted(topicId: String) {
-        val existing = dao.getByTopicId(topicId)
-        dao.upsert((existing ?: ProgressEntity(topicId, false, null, null)).copy(isCompleted = true))
-    }
+    override suspend fun markCompleted(topicId: String) = dao.markCompleted(topicId)
 
-    override suspend fun recordQuizScore(topicId: String, score: Int, attemptedAt: Long) {
-        // Submitting a quiz is itself a completion signal, independent of score.
-        val existing = dao.getByTopicId(topicId)
-        dao.upsert(
-            (existing ?: ProgressEntity(topicId, false, null, null)).copy(
-                isCompleted = true,
-                lastQuizScore = score,
-                lastAttemptedAt = attemptedAt,
-            ),
-        )
-    }
+    override suspend fun recordQuizScore(topicId: String, score: Int, attemptedAt: Long) =
+        dao.recordQuizScore(topicId, score, attemptedAt)
 }
 
 private fun ProgressEntity.toDomain() = TopicProgress(

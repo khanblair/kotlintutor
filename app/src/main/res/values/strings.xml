@@ -1,4 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Kotlin Tutor</string>
+
+    <!-- Bottom navigation -->
+    <string name="bottom_nav_roadmap">Roadmap</string>
+    <string name="bottom_nav_settings">Settings</string>
+
+    <!-- AI Tutor -->
+    <string name="tutor_title">Tutor</string>
+    <string name="tutor_title_with_topic">Tutor — %1$s</string>
+    <string name="tutor_missing_key">Add your DeepSeek API key in Settings to use the Tutor.</string>
+    <string name="tutor_error_prefix">Error: %1$s</string>
+    <string name="tutor_empty_state">Mode: %1$s\nAsk a question below to start the conversation.</string>
+    <string name="tutor_input_placeholder">Ask something…</string>
+    <string name="tutor_send">Send</string>
+    <string name="tutor_stop">Stop</string>
+    <string name="tutor_mode_explain">Explain</string>
+    <string name="tutor_mode_quiz">Quiz me</string>
+    <string name="tutor_mode_review">Review my code</string>
+    <string name="tutor_mode_exercise">Give an exercise</string>
+
+    <!-- Lesson -->
+    <string name="lesson_fallback_title">Lesson</string>
+    <string name="lesson_missing">This topic doesn\'t have a lesson yet.</string>
+    <string name="lesson_key_points">Key points &amp; pitfalls</string>
+    <string name="lesson_recap">Recap — %1$s</string>
+    <string name="lesson_quick_check">Quick check: %1$s</string>
+    <string name="lesson_quick_check_answer">→ %1$s</string>
+    <string name="lesson_complete">Complete</string>
+    <string name="lesson_ask_tutor">Ask Tutor</string>
+    <string name="lesson_take_quiz">Take Quiz</string>
+
+    <!-- Quiz -->
+    <string name="quiz_title">Quiz</string>
+    <string name="quiz_score">Score: %1$d / %2$d</string>
+    <string name="quiz_retry">Retry</string>
+    <string name="quiz_done">Done</string>
+    <string name="quiz_submit">Submit</string>
+    <string name="quiz_correct_answer">Correct answer</string>
+    <string name="quiz_your_answer">Your answer</string>
+
+    <!-- Roadmap -->
+    <string name="roadmap_title">Kotlin Roadmap</string>
+    <string name="roadmap_search_placeholder">Search topics</string>
+    <string name="roadmap_clear_search">Clear search</string>
+    <string name="roadmap_no_results">No topics match "%1$s"</string>
+    <string name="roadmap_your_progress">Your progress</string>
+    <string name="roadmap_topics_of">%1$d of %2$d topics</string>
+    <string name="roadmap_collapse">Collapse</string>
+    <string name="roadmap_expand">Expand</string>
+    <string name="roadmap_content_coming">Content coming soon — tap to mark done</string>
+    <string name="roadmap_completed">Completed</string>
+    <string name="roadmap_last_quiz">Last quiz score: %1$d</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_api_key_title">DeepSeek API Key</string>
+    <string name="settings_api_key_usage">Used only to call the DeepSeek chat API for the AI Tutor. Stored encrypted on this device; sent only to api.deepseek.com.</string>
+    <string name="settings_api_key_optional">Optional — the roadmap, lessons, and quizzes work fully offline without one. Leave this blank to skip the AI Tutor for now; you can add a key here anytime.</string>
+    <string name="settings_api_key_label">API key</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_clear">Clear</string>
+    <string name="settings_saved">Saved</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 </resources>

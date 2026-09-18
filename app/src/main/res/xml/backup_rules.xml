@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy (API < 31) auto-backup equivalent of data_extraction_rules.xml —
+     see that file for why the encrypted API-key prefs are excluded. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="kotlintutor_secure_prefs.xml" />
+</full-backup-content>

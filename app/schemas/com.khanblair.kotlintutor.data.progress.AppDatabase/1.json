@@ -1,0 +1,47 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "9b90355db7c04d91ededceaaf504a810",
+    "entities": [
+      {
+        "tableName": "topic_progress",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`topicId` TEXT NOT NULL, `isCompleted` INTEGER NOT NULL, `lastQuizScore` INTEGER, `lastAttemptedAt` INTEGER, PRIMARY KEY(`topicId`))",
+        "fields": [
+          {
+            "fieldPath": "topicId",
+            "columnName": "topicId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCompleted",
+            "columnName": "isCompleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastQuizScore",
+            "columnName": "lastQuizScore",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastAttemptedAt",
+            "columnName": "lastAttemptedAt",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "topicId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9b90355db7c04d91ededceaaf504a810')"
+    ]
+  }
+}

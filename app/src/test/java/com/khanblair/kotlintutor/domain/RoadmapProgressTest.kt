@@ -46,4 +46,21 @@ class RoadmapProgressTest {
         )
         assertEquals(0, items.completionPercent())
     }
+
+    @Test
+    fun `a single completed topic on a large roadmap rounds up instead of truncating to zero`() {
+        val topics = (1..127).map { item("topic-$it", parentId = "category", completed = it == 1) }
+        assertEquals(1, topics.completionPercent())
+    }
+
+    @Test
+    fun `two thirds rounds to the nearest percent`() {
+        val items = listOf(
+            item("topic-1", parentId = "category", completed = true),
+            item("topic-2", parentId = "category", completed = true),
+            item("topic-3", parentId = "category", completed = false),
+        )
+        // 2/3 = 66.6% -> 67
+        assertEquals(67, items.completionPercent())
+    }
 }

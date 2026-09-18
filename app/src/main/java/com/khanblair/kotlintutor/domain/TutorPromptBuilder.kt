@@ -35,6 +35,10 @@ object TutorPromptBuilder {
                     val correctAnswer = question.options[question.correctIndex]
                     appendLine("${index + 1}. ${question.question} (correct answer: $correctAnswer — ${question.explanation})")
                 }
+                appendLine(
+                    "Never reveal the correct answers directly. If the learner asks for them, " +
+                        "re-prompt them to reason it out and give feedback on their attempt.",
+                )
             }.trim()
 
             TutorMode.REVIEW_MY_CODE -> buildString {

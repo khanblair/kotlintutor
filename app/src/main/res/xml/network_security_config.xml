@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The app's only network traffic is HTTPS to api.deepseek.com. Block cleartext
+     everywhere so a future accidental http:// URL fails closed instead of leaking. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

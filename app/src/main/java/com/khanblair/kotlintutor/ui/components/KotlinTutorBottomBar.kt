@@ -21,15 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.khanblair.kotlintutor.R
 import com.khanblair.kotlintutor.ui.navigation.ROUTE_ROADMAP
 import com.khanblair.kotlintutor.ui.navigation.ROUTE_SETTINGS
 
-private data class BottomBarDestination(val route: String, val label: String, val icon: ImageVector)
+private data class BottomBarDestination(val route: String, val labelRes: Int, val icon: ImageVector)
 
 private val bottomBarDestinations = listOf(
-    BottomBarDestination(ROUTE_ROADMAP, "Roadmap", Icons.Filled.Home),
-    BottomBarDestination(ROUTE_SETTINGS, "Settings", Icons.Filled.Settings),
+    BottomBarDestination(ROUTE_ROADMAP, R.string.bottom_nav_roadmap, Icons.Filled.Home),
+    BottomBarDestination(ROUTE_SETTINGS, R.string.bottom_nav_settings, Icons.Filled.Settings),
 )
 
 /**
@@ -68,6 +70,7 @@ fun KotlinTutorBottomBar(
         ) {
             bottomBarDestinations.forEach { destination ->
                 val selected = currentRoute == destination.route
+                val label = stringResource(destination.labelRes)
                 val tint = if (selected) {
                     MaterialTheme.colorScheme.primary
                 } else {
@@ -81,8 +84,8 @@ fun KotlinTutorBottomBar(
                         .clickable(onClick = { onNavigate(destination.route) })
                         .padding(horizontal = 14.dp, vertical = 4.dp),
                 ) {
-                    Icon(destination.icon, contentDescription = destination.label, tint = tint)
-                    Text(destination.label, color = tint, style = MaterialTheme.typography.labelSmall)
+                    Icon(destination.icon, contentDescription = label, tint = tint)
+                    Text(label, color = tint, style = MaterialTheme.typography.labelSmall)
                 }
             }
         }

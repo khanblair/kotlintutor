@@ -26,12 +26,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khanblair.kotlintutor.R
 import com.khanblair.kotlintutor.ui.components.FloatingNavBarReservedHeight
 import com.khanblair.kotlintutor.ui.components.KotlinTutorButton
 import com.khanblair.kotlintutor.ui.components.KotlinTutorDropdown
@@ -44,8 +46,8 @@ import com.khanblair.kotlintutor.ui.theme.successColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
-    val themeMode by viewModel.themeMode.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
 
     Scaffold(
         // Only the top inset is reserved here — the outer app-level Scaffold's
@@ -56,7 +58,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
         // No back arrow: Settings is a bottom-nav tab, reached only from the
         // pill nav bar, so a back action here would be redundant/confusing.
-        topBar = { KotlinTutorTopBar(title = { Text("Settings") }) },
+        topBar = { KotlinTutorTopBar(title = { Text(stringResource(R.string.settings_title)) }) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -80,18 +82,16 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(end = 8.dp),
                         )
-                        Text("DeepSeek API Key", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.settings_api_key_title), style = MaterialTheme.typography.titleMedium)
                     }
                     Text(
-                        text = "Used only to call the DeepSeek chat API for the AI Tutor. Stored encrypted " +
-                            "on this device; sent only to api.deepseek.com.",
+                        text = stringResource(R.string.settings_api_key_usage),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 8.dp),
                     )
                     Text(
-                        text = "Optional — the roadmap, lessons, and quizzes work fully offline without one. " +
-                            "Leave this blank to skip the AI Tutor for now; you can add a key here anytime.",
+                        text = stringResource(R.string.settings_api_key_optional),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp, bottom = 16.dp),
@@ -99,7 +99,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     KotlinTutorTextField(
                         value = uiState.apiKey,
                         onValueChange = viewModel::updateApiKey,
-                        label = "API key",
+                        label = stringResource(R.string.settings_api_key_label),
                         visualTransformation = PasswordVisualTransformation(),
                     )
                     Row(
@@ -108,11 +108,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                     ) {
                         KotlinTutorButton(onClick = viewModel::save, modifier = Modifier.weight(1f)) {
                             Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
-                            Text("Save")
+                            Text(stringResource(R.string.settings_save))
                         }
                         KotlinTutorSecondaryButton(onClick = viewModel::clear, modifier = Modifier.weight(1f)) {
                             Icon(Icons.Filled.Clear, contentDescription = null, modifier = Modifier.padding(end = 6.dp))
-                            Text("Clear")
+                            Text(stringResource(R.string.settings_clear))
                         }
                     }
                     if (uiState.saved) {
@@ -126,7 +126,7 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
                                 tint = successColor,
                                 modifier = Modifier.padding(end = 6.dp),
                             )
-                            Text(text = "Saved", color = successColor, style = MaterialTheme.typography.bodyMedium)
+                            Text(text = stringResource(R.string.settings_saved), color = successColor, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -148,17 +148,17 @@ private fun ThemeCard(themeMode: ThemeMode, onThemeModeChange: (ThemeMode) -> Un
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Appearance", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleMedium)
             KotlinTutorDropdown(
                 modifier = Modifier.padding(top = 12.dp),
-                label = "Theme",
+                label = stringResource(R.string.settings_theme),
                 selected = themeMode,
                 options = listOf(ThemeMode.SYSTEM, ThemeMode.LIGHT, ThemeMode.DARK),
                 labelFor = {
                     when (it) {
-                        ThemeMode.SYSTEM -> "System"
-                        ThemeMode.LIGHT -> "Light"
-                        ThemeMode.DARK -> "Dark"
+                        ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
+                        ThemeMode.LIGHT -> stringResource(R.string.theme_light)
+                        ThemeMode.DARK -> stringResource(R.string.theme_dark)
                     }
                 },
                 onSelected = onThemeModeChange,
